@@ -22,12 +22,16 @@ type SQS struct {
 }
 
 // New returns a new SQS client.
-func New(creds aws.CredentialsProvider, region string, client *http.Client) *SQS {
+func New(creds aws.CredentialsProvider, region string, endpoint string, client *http.Client) *SQS {
 	if client == nil {
 		client = http.DefaultClient
 	}
 
-	endpoint, service, region := endpoints.Lookup("sqs", region)
+	service := "sqs"
+
+	if endpoint == "" {
+		endpoint, service, region = endpoints.Lookup("sqs", region)
+	}
 
 	return &SQS{
 		client: &aws.QueryClient{
@@ -41,24 +45,6 @@ func New(creds aws.CredentialsProvider, region string, client *http.Client) *SQS
 			APIVersion: "2012-11-05",
 		},
 	}
-}
-
-func NewWithCustomEndpoint(creds aws.CredentialsProvider, endpoint string) *SQS {
-	client := http.DefaultClient
-
-	return &SQS{
-		client: &aws.QueryClient{
-			Context: aws.Context{
-				Credentials: creds,
-				Service:     "sqs",
-				Region:      "local",
-			},
-			Client:     client,
-			Endpoint:   endpoint,
-			APIVersion: "2012-11-05",
-		},
-	}
-
 }
 
 // AddPermission adds a permission to a queue for a specific principal .

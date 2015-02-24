@@ -43,7 +43,7 @@ func New(creds aws.CredentialsProvider, region string, client *http.Client) *SQS
 	}
 }
 
-func NewWithCustomEndpoint(creds aws.CredentialsProvider, endpoint string) {
+func NewWithCustomEndpoint(creds aws.CredentialsProvider, endpoint string) *SQS {
 	client := http.DefaultClient
 
 	return &SQS{
